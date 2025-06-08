@@ -6,7 +6,7 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash
 from user import User
 
-client = MongoClient("mongodb+srv://test:test@chatapp.crzcjww.mongodb.net/?retryWrites=true&w=majority&appName=ChatApp")
+client = MongoClient("Link to connect")
 chat_db = client.get_database("SecureChat")
 
 users_collection = chat_db.get_collection("users")
