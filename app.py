@@ -19,10 +19,10 @@ mail = Mail(app)
 
 # Email config (setup your SMTP credentials here)
 # Looking to send emails in production? Check out our Email API/SMTP product!
-app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = '5e9ef1bd194b91'
-app.config['MAIL_PASSWORD'] = 'e7a03174a66561'
+app.config['MAIL_SERVER']='your config'
+app.config['MAIL_PORT'] = port
+app.config['MAIL_USERNAME'] = 'your username'
+app.config['MAIL_PASSWORD'] = 'your password'
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 mail = Mail(app)
