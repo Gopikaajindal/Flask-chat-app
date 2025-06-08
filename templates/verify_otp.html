@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Verify OTP</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    form { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 10px; margin: 10px 0; }
+    button { background: #28a745; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <form method="POST">
+    <h2>Verify Email: {{ email }}</h2>
+    <input name="otp" placeholder="Enter OTP" required>
+    <button type="submit">Verify</button>
+  </form>
+</body>
+</html>

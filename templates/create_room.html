@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Room</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ff6a00, #ee0979);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      width: 400px;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      background: #ee0979;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    h2 { text-align: center; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create Chat Room</h2>
+    <form method="POST">
+      <input name="room_name" placeholder="Room Name" required>
+      <input name="party2" placeholder="Party 2 Username" required>
+      <input name="party3" placeholder="Party 3 Username" required>
+      <button type="submit">Create Room</button>
+    </form>
+  </div>
+</body>
+</html>

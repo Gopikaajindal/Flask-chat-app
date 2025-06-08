@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Moderate Messages</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f2f5;
+      padding: 30px;
+    }
+    .back-link {
+      text-decoration: none;
+      color: #007BFF;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    .message-box {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    input[type='text'], button {
+      margin-top: 8px;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-right: 8px;
+      margin-top: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .accept { background: #28a745; color: white; border: none; }
+    .modify { background: #ffc107; color: black; border: none; }
+    .block { background: #dc3545; color: white; border: none; }
+  </style>
+</head>
+<body>
+  <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+  <h2>Pending Messages for Moderation</h2>
+  {% for msg in messages %}
+    <div class="message-box">
+      <form method="POST" action="{{ url_for('moderate_action') }}">
+        <input type="hidden" name="msg_id" value="{{ msg['_id'] }}">
+        <p><strong>Sender:</strong> {{ msg['sender'] }} → <strong>Recipient:</strong> {{ msg['recipient'] }}</p>
+        <p><strong>Message:</strong> {{ msg['content'] }}</p>
+        <button name="action" value="accept" class="accept">Accept</button>
+        <button name="action" value="block" class="block">Block</button>
+        <input name="new_message" type="text" placeholder="Modify and approve message">
+        <button name="action" value="modify" class="modify">Modify + Approve</button>
+      </form>
+    </div>
+  {% else %}
+    <p>No pending messages.</p>
+  {% endfor %}
+</body>
+</html>

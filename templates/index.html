@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Rooms</title>
+  <style>
+    body { font-family: sans-serif; padding: 40px; background: #f0f2f5; }
+    ul { list-style: none; padding: 0; }
+    li {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    a, button {
+      text-decoration: none;
+      color: #007BFF;
+      margin-right: 10px;
+      font-size: 0.9em;
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    form { display: inline; }
+    .delete-btn {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .clear-btn {
+      background: #ffc107;
+      color: black;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h2>Your Rooms</h2>
+  <ul>
+    {% for room in rooms %}
+      <li>
+        <span>{{ room['room_name'] }}</span>
+        <div class="actions">
+          {% set rid = room['_id']['room_id'] if room['_id'] is mapping else room['_id'] %}
+          <a href="{{ url_for('chat_room', room_id=rid) }}">Chat</a>
+          {% if is_room_admin(rid, current_user.username) %}
+            <a href="{{ url_for('moderate_room', room_id=rid) }}">Moderate</a>
+            <form method="POST" action="{{ url_for('delete_chat', room_id=rid) }}" onsubmit="return confirm('Delete all chat messages?');">
+              <button type="submit" class="clear-btn">🧹 Clear Chat</button>
+            </form>
+            <form method="POST" action="{{ url_for('delete_room', room_id=rid) }}" onsubmit="return confirm('Delete entire room and chat?');">
+              <button type="submit" class="delete-btn">🗑 Delete Room</button>
+            </form>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <a href="{{ url_for('create_room') }}">➕ Create Room</a> |
+  <a href="{{ url_for('logout') }}">🚪 Logout</a>
+</body>
+</html>

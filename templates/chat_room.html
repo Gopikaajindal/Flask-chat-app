@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Room - {{ room.name }}</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+    .chat-box {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .messages {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+    .message {
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 6px;
+      background: #e0f7fa;
+    }
+    .message.you {
+      background: #d4edda;
+      text-align: right;
+    }
+    .timestamp {
+      font-size: 0.75em;
+      color: #888;
+    }
+    select, textarea, button {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #28a745;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    .back-link {
+      text-decoration: none;
+      color: #007BFF;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <a href="{{ url_for('index') }}" class="back-link">← Back to Home</a>
+    <h2>Room: {{ room.name }}</h2>
+    <p><strong>Admin:</strong> {{ room.created_by }}</p>
+
+    <div class="messages" id="chat-messages">
+      {% for msg in messages %}
+        <div class="message {% if msg.sender == username %}you{% endif %}">
+          {% if msg.sender == username %}
+            {% if msg.recipient == room.created_by %}
+              <strong>You to Admin:</strong>
+            {% else %}
+              <strong>You to Anonymous:</strong>
+            {% endif %}
+          {% else %}
+            <strong>Anonymous to You:</strong>
+          {% endif %}
+          <p>{{ msg.content }}</p>
+          <div class="timestamp">{{ msg['created_at'].strftime('%Y-%m-%d %H:%M') }}</div>
+        </div>
+      {% else %}
+        <p>No approved messages yet.</p>
+      {% endfor %}
+    </div>
+
+    <form id="send-form">
+      <select name="to" id="to" required>
+        <option value="">Send to...</option>
+        {% for member in room_members %}
+          {% set uname = member._id.username %}
+          {% if uname != username %}
+            {% if uname == room.created_by %}
+              <option value="{{ uname }}">{{ uname }} (Admin)</option>
+            {% else %}
+              <option value="{{ uname }}">Anonymous</option>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </select>
+
+      <textarea name="message" id="message" placeholder="Write your message..." required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+  </div>
+
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+    const form = document.getElementById('send-form');
+    const chatBox = document.getElementById('chat-messages');
+    const room = "{{ room._id }}";
+    const username = "{{ username }}";
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const to = document.getElementById('to').value;
+      const message = document.getElementById('message').value;
+
+      socket.emit('send_message', {
+        room: room,
+        username: username,
+        to: to,
+        message: message
+      });
+
+      alert('Message sent for moderation!');
+      form.reset();
+    });
+
+    socket.on('new_message', (data) => {
+      if (data.room_id === room) {
+        const div = document.createElement('div');
+        div.className = 'message';
+        div.innerHTML = `
+          <strong>${data.sender === username ? 'You to ' + (data.recipient === '{{ room.created_by }}' ? 'Admin' : 'Anonymous') : 'Anonymous to You'}:</strong>
+          <p>${data.content}</p>
+          <div class="timestamp">${data.created_at}</div>
+        `;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
